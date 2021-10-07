@@ -3,11 +3,17 @@ from pygame.draw import *
 from random import random
 import math
 
-X_size = 1200
-Y_size = 600
+X = 1200
+Y = 600
 
 
 def mountain_generator(delta, x_size, y_size):
+    '''
+    Функция, рисующая горы
+    :param delta: характерный размер, масштаб гор
+    :param x_size: длина гор по оси x
+    :param y_size: максимально возможная высота гор по оси y
+    '''
     points = []
     x = 0
     y = 0
@@ -25,7 +31,11 @@ def mountain_generator(delta, x_size, y_size):
 
 
 def bird_generator(size):
-    x = [0.1*j for j in range(-40, 41)]
+    '''
+    Функция, рисующая птиц
+    :param size: - размер птицы
+    '''
+    x = [0.1*j for j in range (-40, 41)]
     points = []
     for j in range(len(x)):
        points.append((size * x[j], size * math.sqrt(math.fabs(x[j]))))
@@ -37,29 +47,27 @@ def bird_generator(size):
 pygame.init()
 
 FPS = 30
-screen = pygame.display.set_mode((X_size, Y_size))
-r_sun = Y_size/10
-rect(screen, (254, 214, 163), (0, 0, X_size, 0.225*Y_size))
-rect(screen, (254, 214, 197), (0, 0.225*Y_size, X_size, 0.225*Y_size))
-rect(screen, (254, 214, 163), (0, 0.45*Y_size, X_size, 0.225*Y_size))
-rect(screen, (180, 135, 149), (0, 0.675*Y_size, X_size, 0.325*Y_size))
-circle(screen, (252, 239, 27), (X_size/2, Y_size/4), r_sun)
+screen = pygame.display.set_mode((X, Y))
+r_sun = Y/10
+mount_color = [(252, 153, 45), (173, 65, 49), (44, 7, 33)]
+sky_color =[(254, 214, 163), (254, 214, 197), (254, 214, 163), (180, 135, 149)]
 
-polygon(screen, (252, 153, 45), [(x, 0.45*Y_size-y) for (x, y) in mountain_generator(10, X_size/2-r_sun-10, Y_size/4)], 0)
-polygon(screen, (252, 153, 45), [(x+X_size/2-r_sun-10, 0.45*Y_size-y) for (x, y) in mountain_generator(10, 2*(r_sun+10), 0.2*Y_size-r_sun-10)], 0)
-polygon(screen, (252, 153, 45), [(x+X_size/2+r_sun+10, 0.45*Y_size-y) for (x, y) in mountain_generator(10, X_size/2-r_sun-10, Y_size/4)], 0)
+for i in range (0, 3):
+    rect(screen, sky_color[i], (0, i*0.225*Y, X, 0.225*Y))
+rect(screen, sky_color[3], (0, 0.675*Y, X, 0.325*Y))
 
-polygon(screen, (173, 65, 49), [(x, 0.7*Y_size-y) for (x, y) in mountain_generator(20, X_size, Y_size/2)], 0)
+circle(screen, (252, 239, 27), (X/2, Y/4), r_sun)
 
-polygon(screen, (44, 7, 33), [(x, Y_size-y) for (x, y) in mountain_generator(100, X_size/3, Y_size)], 0)
-polygon(screen, (44, 7, 33), [(X_size/3+x, Y_size-y) for (x, y) in mountain_generator(50, X_size/3, Y_size/4)], 0)
-polygon(screen, (44, 7, 33), [(X_size/3*2+x, Y_size-y) for (x, y) in mountain_generator(100, X_size/3, Y_size)], 0)
+polygon(screen, mount_color[0], [(x, 0.45*Y-y) for (x, y) in mountain_generator(10, X, Y/6)], 0)
+polygon(screen, mount_color[1], [(x, 0.675*Y-y) for (x, y) in mountain_generator(20, X, Y/4)], 0)
+polygon(screen, mount_color[2], [(x, Y-y) for (x, y) in mountain_generator(30, X, Y/2)], 0)
+
 
 num_birds = 9
 for i in range(num_birds):
-    x0 = random() * X_size
-    y0 = random() * (Y_size-100)
-    size = random()*Y_size/40
+    x0 = random() * X
+    y0 = random() * (Y-100)
+    size = random()*Y/40
     polygon(screen, (64, 27, 3), [(x0+x, y0-y) for (x, y) in bird_generator(size)], 0)
 
 
